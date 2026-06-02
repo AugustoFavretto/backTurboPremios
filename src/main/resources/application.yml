@@ -1,0 +1,77 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: turbo-premios
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: false
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /v1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:turbo-premios-secret-key-change-in-production-minimum-256-bits-long}
+    expiration: ${JWT_EXPIRATION:86400000}
+  pix:
+    gateway: ${PIX_GATEWAY:mock}
+    merchant-name: ${PIX_MERCHANT_NAME:Turbo Premios}
+    merchant-city: ${PIX_MERCHANT_CITY:SAO PAULO}
+    pix-key: ${PIX_KEY:turbo@premios.com.br}
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:https://turbopremios.com.br}
+  affiliate:
+    commission-rate: ${AFFILIATE_COMMISSION_RATE:10.0}
+  mercadopago:
+    access-token: ${MP_ACCESS_TOKEN:}
+
+logging:
+  level:
+    com.turbopremios: ${LOG_LEVEL:INFO}
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+

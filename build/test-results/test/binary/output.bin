@@ -1,0 +1,2 @@
+k11:17:59.195 [Test worker] INFO com.turbopremios.auth.service.AuthService -- User logged in: test@test.com
+o11:17:59.366 [Test worker] INFO com.turbopremios.auth.service.AuthService -- New user registered: new@test.com
