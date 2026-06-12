@@ -3,6 +3,7 @@ package com.turbopremios.purchases.service
 import com.turbopremios.affiliate.entity.Commission
 import com.turbopremios.affiliate.repository.AffiliateRepository
 import com.turbopremios.affiliate.repository.CommissionRepository
+import com.turbopremios.auth.repository.UserRepository
 import com.turbopremios.campaigns.repository.CampaignRepository
 import com.turbopremios.exceptions.BadRequestException
 import com.turbopremios.exceptions.NotFoundException
@@ -31,7 +32,8 @@ class PurchaseService(
     private val ticketNumberGenerator: TicketNumberGenerator,
     private val affiliateRepository: AffiliateRepository,
     private val commissionRepository: CommissionRepository,
-    private val paymentGateway: PaymentGateway
+    private val paymentGateway: PaymentGateway,
+    private val userRepository: UserRepository
 ) {
     private val log = LoggerFactory.getLogger(PurchaseService::class.java)
 
@@ -55,6 +57,11 @@ class PurchaseService(
                 "Bilhetes insuficientes. Disponíveis: $availableTickets"
             )
         }
+        val userAffiliate = userRepository.findByAffiliateCode(request.affiliateCode.orEmpty())
+        val userEmail = userRepository.getByEmail(request.userEmail.orEmpty())
+        if (userAffiliate?.cpf == request.userCpf || userEmail?.cpf == request.userCpf) {
+            throw BadRequestException("Operação inválida!")
+        }
 
         val total = campaign.ticketPrice.multiply(
             BigDecimal(request.quantity)
@@ -67,7 +74,7 @@ class PurchaseService(
             userPhone = request.userPhone,
             userEmail = request.userEmail,
             userName = request.userName,
-            affiliateCode = request.affiliateCode,
+            affiliateCode = if (userAffiliate == null) "" else request.affiliateCode,
             quantity = request.quantity,
             total = total
         )
@@ -77,13 +84,14 @@ class PurchaseService(
 
         // 3. gera pix
         val pixResult = paymentGateway.generatePix(
+            userId = userId,
             PixPaymentRequest(
                 purchaseId = savedPurchase.id,
                 amount = total,
                 payerName = request.userName ?: "Cliente",
                 payerEmail = request.userEmail,
                 description = "Turbo Prêmios - ${campaign.title}",
-                payerCpf = request.userpayerCpf.orEmpty()
+                payerCpf = request.userCpf.orEmpty()
             )
         )
 
@@ -118,8 +126,11 @@ class PurchaseService(
 
     @Transactional
     fun confirmPayment(purchaseId: String) {
-        val purchase = purchaseRepository.findById(purchaseId)
-            .orElseThrow { NotFoundException("Compra não encontrada.") }
+        val purchase = purchaseRepository
+            .findByGatewayPaymentId(purchaseId)
+            ?: throw NotFoundException(
+                "Compra não encontrada."
+            )
 
         if (purchase.paymentStatus == "paid") {
             log.warn("Purchase {} already paid, skipping", purchaseId)

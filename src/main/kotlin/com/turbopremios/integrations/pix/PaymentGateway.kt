@@ -19,6 +19,6 @@ data class PixPaymentResult(
 )
 
 interface PaymentGateway {
-    fun generatePix(request: PixPaymentRequest): PixPaymentResult
+    fun generatePix(userId: String? = null, request: PixPaymentRequest): PixPaymentResult
     fun confirmPayment(gatewayPaymentId: String): Boolean
 }

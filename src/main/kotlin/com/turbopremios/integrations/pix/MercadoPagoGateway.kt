@@ -20,9 +20,7 @@ class MercadoPagoGateway : PaymentGateway {
 
     private val log = LoggerFactory.getLogger(MercadoPagoGateway::class.java)
 
-    override fun generatePix(
-        request: PixPaymentRequest
-    ): PixPaymentResult {
+    override fun generatePix(userId: String?, request: PixPaymentRequest): PixPaymentResult {
 
         try {
 

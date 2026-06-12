@@ -20,7 +20,7 @@ class MockPaymentGateway(private val pixProperties: PixProperties) : PaymentGate
 
     private val log = LoggerFactory.getLogger(MockPaymentGateway::class.java)
 
-    override fun generatePix(request: PixPaymentRequest): PixPaymentResult {
+    override fun generatePix(userId: String?, request: PixPaymentRequest): PixPaymentResult {
         log.info("MockPaymentGateway: generating PIX for purchase {} amount {}", request.purchaseId, request.amount)
 
         val pixCode = buildEmvPixCode(

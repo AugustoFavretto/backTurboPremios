@@ -1,5 +1,7 @@
 package com.turbopremios.integrations.pix
+import com.turbopremios.auth.repository.UserRepository
 import com.turbopremios.config.assas.AsaasProperties
+import com.turbopremios.exceptions.NotFoundException
 import com.turbopremios.purchases.dto.AsaasCustomerRequest
 import com.turbopremios.purchases.dto.AsaasCustomerResponse
 import com.turbopremios.purchases.dto.AsaasPaymentDetailsResponse
@@ -19,7 +21,8 @@ import java.time.LocalDateTime
     havingValue = "asaas"
 )
 class AsaasGateway(
-    private val properties: AsaasProperties
+    private val properties: AsaasProperties,
+    private val userRepository: UserRepository
 ) : PaymentGateway {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -29,9 +32,7 @@ class AsaasGateway(
         .defaultHeader("access_token", properties.apiKey)
         .build()
 
-    override fun generatePix(
-        request: PixPaymentRequest
-    ): PixPaymentResult {
+    override fun generatePix(userId: String?, request: PixPaymentRequest): PixPaymentResult {
 
         log.info(
             "Generating PIX via Asaas. Purchase={} Amount={}",
@@ -39,10 +40,36 @@ class AsaasGateway(
             request.amount
         )
 
-        val customer = createCustomer(request)
+
+        val customerId = if (userId != null) {
+
+            val user = userRepository.findById(userId)
+                .orElseThrow {
+                    RuntimeException("Usuário não encontrado")
+                }
+
+            if (!user.asaasCustomerId.isNullOrBlank()) {
+
+                user.asaasCustomerId!!
+
+            } else {
+
+                val customer = createCustomer(request)
+
+                user.asaasCustomerId = customer.id
+
+                userRepository.save(user)
+
+                customer.id
+            }
+
+        } else {
+            createCustomer(request).id
+        }
+
 
         val payment = createPixPayment(
-            customerId = customer.id,
+            customerId = customerId,
             request = request
         )
 

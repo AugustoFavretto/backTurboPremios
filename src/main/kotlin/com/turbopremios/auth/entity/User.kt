@@ -27,6 +27,9 @@ class User(
     @Column(name = "phone")
     var phone: String? = null,
 
+    @Column(name = "asaas_customer_id")
+    var asaasCustomerId: String? = null,
+
     @Column(name = "password_hash", nullable = false)
     private var passwordHash: String,
 

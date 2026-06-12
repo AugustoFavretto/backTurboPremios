@@ -33,7 +33,10 @@ class AuthController(private val authService: AuthService) {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Dados do usuário autenticado", security = [SecurityRequirement(name = "Bearer Authentication")])
+    @Operation(
+        summary = "Dados do usuário autenticado",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
     fun me(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<ApiResponse<UserResponse>> {
         val user = authService.me(userDetails.username)
         return ResponseEntity.ok(ApiResponse.success(user))

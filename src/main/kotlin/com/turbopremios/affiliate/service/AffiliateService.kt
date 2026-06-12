@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
@@ -29,7 +28,7 @@ class AffiliateService(
 ) {
     private val log = LoggerFactory.getLogger(AffiliateService::class.java)
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun getProfile(userId: String): AffiliateProfileResponse {
         val affiliate = affiliateRepository.findByUserId(userId)
             .orElseGet { createAffiliateForUser(userId) }
@@ -134,16 +133,29 @@ class AffiliateService(
         return code
     }
 
-    private fun buildMonthlyRevenue(affiliate: Affiliate): List<MonthlyRevenueDto> {
+    private fun buildMonthlyRevenue(
+        affiliate: Affiliate
+    ): List<MonthlyRevenueDto> {
+
         val today = LocalDate.now()
-        return (5 downTo 0).map { monthsBack ->
+
+        return (6 downTo 0).map { monthsBack ->
             val month = today.minusMonths(monthsBack.toLong())
-            val monthName = month.month.getDisplayName(TextStyle.SHORT, Locale("pt", "BR"))
-                .replaceFirstChar { it.uppercase() }
+
+            val commissions =
+                commissionRepository.findByAffiliateIdAndMonth(
+                    affiliate.id,
+                    month.monthValue,
+                    month.year
+                )
+
             MonthlyRevenueDto(
-                month = monthName,
-                revenue = BigDecimal.ZERO,
-                sales = 0
+                month = month.month.getDisplayName(
+                    TextStyle.SHORT,
+                    Locale("pt", "BR")
+                ),
+                revenue = commissions.sumOf { it.amount },
+                sales = commissions.size
             )
         }
     }

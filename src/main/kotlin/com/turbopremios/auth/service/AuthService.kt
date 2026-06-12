@@ -6,6 +6,7 @@ import com.turbopremios.auth.repository.UserRepository
 import com.turbopremios.exceptions.ConflictException
 import com.turbopremios.exceptions.NotFoundException
 import com.turbopremios.exceptions.UnauthorizedException
+import com.turbopremios.extensions.onlyDigits
 import com.turbopremios.security.JwtService
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
@@ -47,12 +48,15 @@ class AuthService(
         if (userRepository.existsByEmail(request.email)) {
             throw ConflictException("E-mail já cadastrado.")
         }
+        if (userRepository.existsByCpf(request.cpf)) {
+            throw ConflictException("CPF já cadastrado.")
+        }
 
         val user = User(
             name = request.name,
             email = request.email,
-            cpf = request.cpf,
-            phone = request.phone,
+            cpf = request.cpf.onlyDigits(),
+            phone = request.phone.onlyDigits(),
             passwordHash = ""
         ).also {
             it.setPassword(passwordEncoder.encode(request.password))

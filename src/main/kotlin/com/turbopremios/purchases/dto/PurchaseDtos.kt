@@ -18,7 +18,7 @@ data class CreatePurchaseRequest(
     val userEmail: String? = null,
     val userName: String? = null,
     val affiliateCode: String? = null,
-    val userpayerCpf: String? = null
+    val userCpf: String? = null
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

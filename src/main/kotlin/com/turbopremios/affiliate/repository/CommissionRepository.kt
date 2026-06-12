@@ -9,6 +9,14 @@ import java.math.BigDecimal
 @Repository
 interface CommissionRepository : JpaRepository<Commission, String> {
     fun findByAffiliateId(affiliateId: String): List<Commission>
+
+    @Query(" SELECT c FROM Commission c WHERE c.affiliateId = :affiliateId AND MONTH(c.createdAt) = :month AND YEAR(c.createdAt) = :year")
+    fun findByAffiliateIdAndMonth(
+        affiliateId: String,
+        month: Int,
+        year: Int
+    ): List<Commission>
+
     fun findByAffiliateIdAndStatus(affiliateId: String, status: String): List<Commission>
 
     @Query("SELECT COALESCE(SUM(c.amount), 0) FROM Commission c WHERE c.affiliateId = :affiliateId AND c.status = :status")
