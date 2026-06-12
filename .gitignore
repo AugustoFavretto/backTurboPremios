@@ -1,2 +1,42 @@
 node_modules
 .env
+### Gradle ###
+.gradle/
+build/
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+out/
+
+### VS Code ###
+.vscode/
+
+### Mac ###
+.DS_Store
+
+### Logs ###
+*.log
+
+### Kotlin ###
+*.class
+
+### Spring Boot ###
+application-local.yml
+application-dev-local.yml
+application-prod-local.yml
+
+### Environment files ###
+.env
+.env.*
+
+### Generated files ###
+bin/
+target/
+
+### Coverage ###
+coverage/
+jacoco.exec
+
+### OS files ###
+Thumbs.db
