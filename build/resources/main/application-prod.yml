@@ -1,9 +1,0 @@
-spring:
-  jpa:
-    show-sql: false
-  flyway:
-    enabled: true
-
-logging:
-  level:
-    com.turbopremios: INFO

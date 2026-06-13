@@ -12,4 +12,5 @@ interface UserRepository : JpaRepository<User, String> {
     fun findByAffiliateCode(code: String): User?
     fun existsByEmail(email: String): Boolean
     fun existsByCpf(cpf: String): Boolean
+    fun existsByPhone(phone: String): Boolean
 }

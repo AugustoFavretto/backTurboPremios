@@ -60,6 +60,18 @@ data class ResetPasswordRequest(
     val password: String
 )
 
+data class UpdateProfileRequest(
+
+    @field:NotBlank(message = "Nome é obrigatório")
+    val name: String,
+
+    @field:Email(message = "E-mail inválido")
+    val email: String,
+
+    @field:NotBlank(message = "Telefone é obrigatório")
+    val phone: String,
+)
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UserResponse(
     val id: String,

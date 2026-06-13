@@ -42,6 +42,26 @@ class AuthController(private val authService: AuthService) {
         return ResponseEntity.ok(ApiResponse.success(user))
     }
 
+    @PutMapping("/me")
+    @Operation(
+        summary = "Atualizar perfil",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    fun updateProfile(
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @Valid @RequestBody request: UpdateProfileRequest,
+    ): ResponseEntity<ApiResponse<UserResponse>> {
+
+        val user = authService.updateProfile(
+            userDetails.username,
+            request,
+        )
+
+        return ResponseEntity.ok(
+            ApiResponse.success(user)
+        )
+    }
+
     @PostMapping("/logout")
     @Operation(summary = "Logout", security = [SecurityRequirement(name = "Bearer Authentication")])
     fun logout(): ResponseEntity<ApiResponse<Nothing>> =
