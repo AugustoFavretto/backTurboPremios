@@ -14,3 +14,6 @@ logging:
 app:
   pix:
     gateway: asaas
+
+mercadopago:
+  access-token: APP_USR-5510449896558649-060114-76080479986f8ed33551b5688bd31f3b-3432219360
