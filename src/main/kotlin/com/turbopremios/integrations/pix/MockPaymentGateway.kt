@@ -22,6 +22,7 @@ class MockPaymentGateway(private val pixProperties: PixProperties) : PaymentGate
 
     override fun generatePix(userId: String?, request: PixPaymentRequest): PixPaymentResult {
         log.info("MockPaymentGateway: generating PIX for purchase {} amount {}", request.purchaseId, request.amount)
+        log.info("MockPaymentGateway: generating PIX for purchase {} amount {}", request.purchaseId, request.amount)
 
         val pixCode = buildEmvPixCode(
             pixKey = pixProperties.pixKey,
