@@ -59,9 +59,9 @@ class PurchaseService(
         }
         val userAffiliate = userRepository.findByAffiliateCode(request.affiliateCode.orEmpty())
         val userEmail = userRepository.getByEmail(request.userEmail.orEmpty())
-        if (userAffiliate?.cpf == request.userCpf || userEmail?.cpf == request.userCpf) {
-            throw BadRequestException("Operação inválida!")
-        }
+//        if (userAffiliate?.cpf == request.userCpf || userEmail?.cpf == request.userCpf) {
+//            throw BadRequestException("Operação inválida!")
+//        }
 
         val total = campaign.ticketPrice.multiply(
             BigDecimal(request.quantity)
