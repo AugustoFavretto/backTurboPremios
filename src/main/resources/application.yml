@@ -57,6 +57,11 @@ management:
       exposure:
         include: health,info,metrics
 
+asaas:
+  api-url: ${ASAAS_API_URL}
+  api-key: ${ASAAS_API_KEY}
+  webhook-token: ${ASAAS_WEBHOOK_TOKEN}
+
 app:
   jwt:
     secret: ${JWT_SECRET:turbo-premios-secret-key-change-in-production-minimum-256-bits-long}
