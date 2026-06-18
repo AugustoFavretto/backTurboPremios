@@ -17,3 +17,8 @@ app:
 
 mercadopago:
   access-token: APP_USR-5510449896558649-060114-76080479986f8ed33551b5688bd31f3b-3432219360
+
+asaas:
+  api-url: https://api.asaas.com/v3
+  api-key: $aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjY1ZGEwY2VhLThiNTktNGMzNi1iMmM3LTI1YTczNGNhZGE2Yzo6JGFhY2hfZTdlY2Q1YzEtOTY1YS00MjFkLTk5YzMtNzc1NThhMGIyOTQy
+  webhook-token: whsec_5W_PyvYFN_Yle8TzmAgwigJbsGvG0DUMEcxYS5lTCs0
