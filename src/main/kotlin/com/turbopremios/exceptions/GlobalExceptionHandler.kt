@@ -52,7 +52,12 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> {
-        log.error("Unexpected error", ex)
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error("Erro interno do servidor."))
+        ex.printStackTrace()
+
+        log.error("Unexpected error: ${ex.javaClass.name}")
+        log.error("Message: ${ex.message}")
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error("Erro interno do servidor"))
     }
 }
