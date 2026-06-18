@@ -34,6 +34,9 @@ class AsaasGateway(
 
     override fun generatePix(userId: String?, request: PixPaymentRequest): PixPaymentResult {
 
+        log.info("ASAAS URL: {}", properties.apiUrl)
+        log.info("ASAAS KEY PRESENT: {}", properties.apiKey.isNotBlank())
+
         log.info(
             "Generating PIX via Asaas. Purchase={} Amount={}",
             request.purchaseId,
@@ -103,20 +106,24 @@ class AsaasGateway(
         request: PixPaymentRequest
     ): AsaasCustomerResponse {
 
-        return client.post()
-            .uri("/customers")
-            .body(
-                AsaasCustomerRequest(
-                    name = request.payerName,
-                    cpfCnpj = request.payerCpf,
-                    email = request.payerEmail
+        try {
+            return client.post()
+                .uri("/customers")
+                .body(
+                    AsaasCustomerRequest(
+                        name = request.payerName,
+                        cpfCnpj = request.payerCpf,
+                        email = request.payerEmail
+                    )
                 )
-            )
-            .retrieve()
-            .body(AsaasCustomerResponse::class.java)
-            ?: throw RuntimeException(
-                "Erro ao criar cliente no Asaas"
-            )
+                .retrieve()
+                .body(AsaasCustomerResponse::class.java)
+                ?: throw RuntimeException("Erro ao criar cliente no Asaas")
+
+        } catch (e: Exception) {
+            log.error("ERRO ASAAS CREATE CUSTOMER", e)
+            throw e
+        }
     }
 
     private fun createPixPayment(

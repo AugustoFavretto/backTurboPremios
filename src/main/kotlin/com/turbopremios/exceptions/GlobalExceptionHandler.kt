@@ -52,13 +52,12 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> {
-        log.error("Type: {}", ex.javaClass.name)
-        log.error("Message: {}", ex.message)
-
-        ex.cause?.let {
-            log.error("Cause Type: {}", it.javaClass.name)
-            log.error("Cause Message: {}", it.message)
-        }
+        log.error(
+            "Unexpected error type={} message={}",
+            ex.javaClass.name,
+            ex.message,
+            ex
+        )
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiResponse.error("Erro interno"))
